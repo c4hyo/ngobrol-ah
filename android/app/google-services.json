@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "467726223999",
+    "firebase_url": "https://ngobrol-ah.firebaseio.com",
+    "project_id": "ngobrol-ah",
+    "storage_bucket": "ngobrol-ah.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467726223999:android:56ee2237bdc46351928d4a",
+        "android_client_info": {
+          "package_name": "com.example.ngobro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467726223999-acete5n4cr0aidau5qo291ltl8fjnlc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM1gJX1B_u33fuuHQjzP3mRWxpx-fsMlA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467726223999-acete5n4cr0aidau5qo291ltl8fjnlc9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
