@@ -10,10 +10,18 @@
       "client_info": {
         "mobilesdk_app_id": "1:467726223999:android:56ee2237bdc46351928d4a",
         "android_client_info": {
-          "package_name": "com.example.ngobro"
+          "package_name": "com.example.ngobrol_ah"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "467726223999-36ebfcu0c4tdo41are7uha3h3fvoe7br.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ngobrol_ah",
+            "certificate_hash": "2bbf23b0e52db872972528ddb91f055060c2ad24"
+          }
+        },
         {
           "client_id": "467726223999-acete5n4cr0aidau5qo291ltl8fjnlc9.apps.googleusercontent.com",
           "client_type": 3
