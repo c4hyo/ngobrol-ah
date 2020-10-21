@@ -8,6 +8,7 @@ import 'package:ngobrol_ah/network/services/user.dart';
 import 'package:ngobrol_ah/utilities/text.dart';
 import 'package:ngobrol_ah/view/screen/home/chat_room.dart';
 import 'package:ngobrol_ah/view/screen/home/user_all.dart';
+import 'package:ngobrol_ah/view/screen/user/profil.dart';
 
 class Home extends StatefulWidget {
   final User user;
@@ -20,22 +21,53 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String idUser, lastPesan;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(widget.userModel.nama),
+              accountEmail: Text(widget.user.email),
+              currentAccountPicture: CircleAvatar(
+                child: Icon(Icons.person),
+              ),
+            ),
+            ListTile(
+              title: Text("Profil"),
+              leading: Icon(Icons.person_outline),
+              onTap: () {
+                Get.back();
+                Get.to(
+                  ProfilScreen(
+                    user: widget.user,
+                    userModel: widget.userModel,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text("Ganti Password"),
+              leading: Icon(Icons.lock_outline),
+            ),
+            Expanded(child: SizedBox.shrink()),
+            ListTile(
+              title: Text("Logout"),
+              leading: Icon(Icons.exit_to_app),
+              onTap: () async {
+                await UserServices.signOut();
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(
           "Chat",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () async {
-              await UserServices.signOut();
-            },
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,

@@ -211,9 +211,8 @@ class _RegistrasiScreenState extends State<RegistrasiScreen> {
                             });
                             Alert(
                               context: context,
-                              title: "Gagal",
+                              title: "Gagal Registrasi",
                               type: AlertType.error,
-                              desc: "Gagal login",
                               buttons: [
                                 DialogButton(
                                   child: Text(

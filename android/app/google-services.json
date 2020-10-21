@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "467726223999",
-    "firebase_url": "https://ngobrol-ah.firebaseio.com",
-    "project_id": "ngobrol-ah",
-    "storage_bucket": "ngobrol-ah.appspot.com"
+    "project_number": "169622120690",
+    "firebase_url": "https://ngobrol-kuy-e5cda.firebaseio.com",
+    "project_id": "ngobrol-kuy-e5cda",
+    "storage_bucket": "ngobrol-kuy-e5cda.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:467726223999:android:56ee2237bdc46351928d4a",
+        "mobilesdk_app_id": "1:169622120690:android:33ddb4e42172e59081886b",
         "android_client_info": {
           "package_name": "com.example.ngobrol_ah"
         }
       },
       "oauth_client": [
         {
-          "client_id": "467726223999-36ebfcu0c4tdo41are7uha3h3fvoe7br.apps.googleusercontent.com",
+          "client_id": "169622120690-0bb3hqat9uhbdv2aikfu3esuv7ir5l4g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.ngobrol_ah",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "467726223999-acete5n4cr0aidau5qo291ltl8fjnlc9.apps.googleusercontent.com",
+          "client_id": "169622120690-m11ira1p49sns58pdfjiem3qd2n09mep.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCM1gJX1B_u33fuuHQjzP3mRWxpx-fsMlA"
+          "current_key": "AIzaSyD012-2xWS66x5Uu8PXdmRkGXTuxsNnjF4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "467726223999-acete5n4cr0aidau5qo291ltl8fjnlc9.apps.googleusercontent.com",
+              "client_id": "169622120690-m11ira1p49sns58pdfjiem3qd2n09mep.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
