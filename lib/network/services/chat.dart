@@ -20,11 +20,13 @@ class ChatServices {
     });
   }
 
-  static Future<void> sendMessage(
-      {String chatRoom,
-      String message,
-      UserModel model,
-      UserModel model2}) async {
+  static Future<void> sendMessage({
+    String chatRoom,
+    String message,
+    UserModel model,
+    UserModel model2,
+    String type,
+  }) async {
     await chats.doc(chatRoom).set({
       "last-message": DateFormat('yyyy-MM-dd hh:mm:aa').format(DateTime.now()),
       "member": [
@@ -36,6 +38,7 @@ class ChatServices {
       "dari": model.nama,
       "user_id": model.uid,
       "pesan": message,
+      "type": type,
       // "dibuat": DateFormat('yyyy-MM-dd hh:mm:aa').format(DateTime.now()),
       "dibuat": DateTime.now().toIso8601String(),
     });

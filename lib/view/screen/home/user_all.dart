@@ -46,7 +46,20 @@ class UserAllScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          title: Text(model.nama),
+                          leading: CircleAvatar(
+                            maxRadius: 25,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: (model.fotoProfil == "" ||
+                                    model.fotoProfil == null)
+                                ? AssetImage("asset/logo.png")
+                                : NetworkImage(model.fotoProfil),
+                          ),
+                          title: Text(
+                            model.nama,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(model.bio),
                         ),
                       )
                     : SizedBox();

@@ -28,12 +28,36 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
         child: Column(
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(widget.userModel.nama),
-              accountEmail: Text(widget.user.email),
-              currentAccountPicture: CircleAvatar(
-                child: Icon(Icons.person),
-              ),
+            StreamBuilder<DocumentSnapshot>(
+              stream: UserServices.users.doc(widget.user.uid).snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return UserAccountsDrawerHeader(
+                    accountName: Text(widget.userModel.nama),
+                    accountEmail: Text(widget.user.email),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: (widget.userModel.fotoProfil == null ||
+                              widget.userModel.fotoProfil == "")
+                          ? AssetImage("asset/logo.png")
+                          : NetworkImage(widget.userModel.fotoProfil),
+                    ),
+                  );
+                }
+                DocumentSnapshot docs = snapshot.data;
+                UserModel model = UserModel.toMaps(docs);
+                return UserAccountsDrawerHeader(
+                  accountName: Text(model.nama),
+                  accountEmail: Text(widget.user.email),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage:
+                        (model.fotoProfil == null || model.fotoProfil == "")
+                            ? AssetImage("asset/logo.png")
+                            : NetworkImage(model.fotoProfil),
+                  ),
+                );
+              },
             ),
             ListTile(
               title: Text("Profil"),
@@ -123,9 +147,22 @@ class _HomeState extends State<Home> {
                               userModel: widget.userModel,
                               userModelOther: model,
                             ),
+                            transition: Transition.rightToLeft,
                           );
                         },
-                        title: Text(model.nama),
+                        leading: CircleAvatar(
+                          maxRadius: 25,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: (model.fotoProfil == "" ||
+                                  model.fotoProfil == null)
+                              ? AssetImage("asset/logo.png")
+                              : NetworkImage(model.fotoProfil),
+                        ),
+                        title: Text(
+                          model.nama,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         subtitle: StreamBuilder<QuerySnapshot>(
                           stream: ChatServices.chats
                               .doc(data.id)
@@ -140,7 +177,16 @@ class _HomeState extends State<Home> {
                             DocumentSnapshot dsc = s.data.docs.last;
                             Map<String, dynamic> _pesan = dsc.data();
                             lastPesan = _pesan['dibuat'];
-                            return Text(_pesan['pesan']);
+                            return Row(
+                              children: [
+                                (_pesan['user_id'] == widget.user.uid)
+                                    ? Icon(Icons.arrow_left)
+                                    : Icon(Icons.arrow_right),
+                                (_pesan['type'] == "image")
+                                    ? Text("Gambar")
+                                    : Text(_pesan['pesan']),
+                              ],
+                            );
                           },
                         ),
                         trailing: StreamBuilder<QuerySnapshot>(

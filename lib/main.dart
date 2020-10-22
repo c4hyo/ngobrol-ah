@@ -49,7 +49,7 @@ class Wrapper extends StatelessWidget {
     return (user == null)
         ? LoginScreen()
         : FutureBuilder<DocumentSnapshot>(
-            future: UserServices.getProfil(user.uid),
+            future: UserServices.users.doc(user.uid).get(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Scaffold(
@@ -60,7 +60,8 @@ class Wrapper extends StatelessWidget {
                   ),
                 );
               }
-              UserModel model = UserModel.toMaps(snapshot.data);
+              DocumentSnapshot docs = snapshot.data;
+              UserModel model = UserModel.toMaps(docs);
               return Home(
                 user: user,
                 userModel: model,

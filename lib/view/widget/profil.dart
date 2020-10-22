@@ -41,9 +41,10 @@ Widget profil(BuildContext context, {UserModel model, User user}) {
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   maxRadius: 80,
-                  backgroundImage: (model.fotoProfil == "")
-                      ? AssetImage("asset/logo.png")
-                      : NetworkImage(model.fotoProfil),
+                  backgroundImage:
+                      (model.fotoProfil == null || model.fotoProfil == "")
+                          ? AssetImage("asset/logo.png")
+                          : NetworkImage(model.fotoProfil),
                 ),
               ),
             )
@@ -60,16 +61,18 @@ Widget profil(BuildContext context, {UserModel model, User user}) {
           style: TextStyle(fontSize: 18),
         ),
       ),
-      ListTile(
-        title: Text(
-          "Email",
-          style: TextStyle(fontSize: 18),
-        ),
-        subtitle: Text(
-          user.email,
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
+      (user.uid != model.uid)
+          ? SizedBox.shrink()
+          : ListTile(
+              title: Text(
+                "Email",
+                style: TextStyle(fontSize: 18),
+              ),
+              subtitle: Text(
+                user.email,
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
       ListTile(
         title: Text(
           "Telepon",
@@ -90,26 +93,28 @@ Widget profil(BuildContext context, {UserModel model, User user}) {
           style: TextStyle(fontSize: 18),
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: MaterialButton(
-          child: Text(
-            "Ubah Profil",
-            style: TextStyle(fontSize: 18, color: Colors.white),
-          ),
-          onPressed: () {
-            Get.to(
-              UserEditProfil(
-                user: user,
-                userModel: model,
+      (user.uid != model.uid)
+          ? SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: MaterialButton(
+                child: Text(
+                  "Ubah Profil",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                onPressed: () {
+                  Get.to(
+                    UserEditProfil(
+                      user: user,
+                      userModel: model,
+                    ),
+                  );
+                },
+                minWidth: double.infinity,
+                height: 60,
+                color: Theme.of(context).primaryColor,
               ),
-            );
-          },
-          minWidth: double.infinity,
-          height: 60,
-          color: Theme.of(context).primaryColor,
-        ),
-      )
+            )
     ],
   );
 }

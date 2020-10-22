@@ -21,7 +21,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: StreamBuilder<DocumentSnapshot>(
-            stream: UserServices.users.doc(widget.user.uid).snapshots(),
+            stream: UserServices.users.doc(widget.userModel.uid).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return profil(

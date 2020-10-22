@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ngobrol_ah/network/model/user_model.dart';
 
 class UserServices {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -60,6 +61,25 @@ class UserServices {
   static Future<DocumentSnapshot> getProfil(String id) async {
     try {
       return await users.doc(id).get();
+    } catch (e) {
+      return e;
+    }
+  }
+
+  static Future<void> updateProfil({UserModel userModel, User user}) async {
+    try {
+      await user.updateProfile(
+        displayName: userModel.nama,
+      );
+      return await users.doc(user.uid).set(
+        {
+          "nama": userModel.nama,
+          "telepon": userModel.telepon,
+          "foto_profil": userModel.fotoProfil,
+          "bio": userModel.bio,
+        },
+        SetOptions(merge: true),
+      );
     } catch (e) {
       return e;
     }
