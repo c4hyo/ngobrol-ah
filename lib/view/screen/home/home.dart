@@ -89,7 +89,7 @@ class _HomeState extends State<Home> {
       ),
       appBar: AppBar(
         title: Text(
-          "Chat",
+          "Ngobrol Kuy",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -110,6 +110,7 @@ class _HomeState extends State<Home> {
         child: StreamBuilder<QuerySnapshot>(
           stream: ChatServices.chats
               .where("member", arrayContains: widget.userModel.uid)
+              .orderBy("created_at", descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {

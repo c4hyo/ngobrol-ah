@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
 
 class ChatServices {
@@ -28,7 +27,7 @@ class ChatServices {
     String type,
   }) async {
     await chats.doc(chatRoom).set({
-      "last-message": DateFormat('yyyy-MM-dd hh:mm:aa').format(DateTime.now()),
+      "created_at": DateTime.now(),
       "member": [
         model.uid,
         model2.uid,

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ngobrol_ah/network/model/chat_model.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
 import 'package:ngobrol_ah/network/services/chat.dart';
 import 'package:ngobrol_ah/utilities/storage.dart';
@@ -24,6 +25,8 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
+  int _chat = 0;
+  int _chats = 0;
   GlobalKey<FormState> _form = GlobalKey<FormState>();
   String _message;
   File _foto;
@@ -55,7 +58,7 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
+        title: ListTile(
           onTap: () {
             Get.to(
               ProfilScreen(
@@ -64,28 +67,18 @@ class _ChatRoomState extends State<ChatRoom> {
               ),
             );
           },
-          child: Row(
-            children: [
-              CircleAvatar(
-                maxRadius: 25,
-                backgroundColor: Colors.transparent,
-                backgroundImage: (widget.userModelOther.fotoProfil == null ||
-                        widget.userModelOther.fotoProfil == "")
-                    ? AssetImage("asset/logo.png")
-                    : NetworkImage(widget.userModelOther.fotoProfil),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                widget.userModelOther.nama,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              )
-            ],
+          title: Text(
+            widget.userModelOther.nama,
+            style: TextStyle(color: Colors.white),
+          ),
+          leading: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            backgroundImage: (widget.userModelOther.fotoProfil == null ||
+                    widget.userModelOther.fotoProfil == "")
+                ? AssetImage("asset/logo.png")
+                : NetworkImage(widget.userModelOther.fotoProfil),
           ),
         ),
-        elevation: 0,
       ),
       body: SafeArea(
         child: Column(
@@ -105,83 +98,38 @@ class _ChatRoomState extends State<ChatRoom> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    return ListView.builder(
-                      reverse: true,
-                      controller: _scrollController,
-                      itemCount: snapshot.data.docs.length,
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot docs = snapshot.data.docs[index];
-                        Map<String, dynamic> pesan = docs.data();
-                        return (pesan['user_id'] == widget.user.uid)
-                            ? Bubble(
-                                margin: BubbleEdges.only(top: 10),
-                                alignment: Alignment.topRight,
-                                nipWidth: 8,
-                                nipHeight: 24,
-                                nip: BubbleNip.rightTop,
-                                color: Color.fromRGBO(225, 255, 199, 1.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    (pesan['type'] == "image")
-                                        ? Container(
-                                            height: 200,
-                                            width: 200,
-                                            child: Image(
-                                              image:
-                                                  NetworkImage(pesan['pesan']),
-                                              fit: BoxFit.contain,
-                                            ),
-                                          )
-                                        : Text(
-                                            pesan['pesan'],
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                            ),
-                                            textAlign: TextAlign.right,
-                                          ),
-                                    Text(
-                                      timeAgo(tanggal: pesan['dibuat']),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Bubble(
-                                margin: BubbleEdges.only(top: 10),
-                                alignment: Alignment.topLeft,
-                                nipWidth: 8,
-                                nipHeight: 24,
-                                nip: BubbleNip.leftTop,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    (pesan['type'] == "image")
-                                        ? Image(
-                                            image: NetworkImage(pesan['pesan']),
-                                          )
-                                        : Text(
-                                            pesan['pesan'],
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                            ),
-                                            textAlign: TextAlign.right,
-                                          ),
-                                    Text(
-                                      timeAgo(tanggal: pesan['dibuat']),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                ),
-                              );
-                      },
-                    );
+                    _chat = snapshot.data.docs.length;
+                    return (snapshot.data.docs.length > 0)
+                        ? Bub(
+                            scrollController: _scrollController,
+                            widget: widget,
+                            snapshot: snapshot,
+                          )
+                        : StreamBuilder(
+                            stream: ChatServices.chats
+                                .doc(widget.userModelOther.uid +
+                                    "-" +
+                                    widget.userModel.uid)
+                                .collection("pesan")
+                                .snapshots(),
+                            builder: (context, snaps) {
+                              if (!snaps.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              _chats = snaps.data.docs.length;
+                              return (snaps.data.docs.length > 0)
+                                  ? Bub(
+                                      scrollController: _scrollController,
+                                      widget: widget,
+                                      snapshot: snaps,
+                                    )
+                                  : Center(
+                                      child: Text("Obrolan baru"),
+                                    );
+                            },
+                          );
                   },
                 ),
               ),
@@ -233,10 +181,13 @@ class _ChatRoomState extends State<ChatRoom> {
                       FocusScope.of(context).unfocus();
                       if (_form.currentState.validate()) {
                         _form.currentState.save();
-                        print(_message);
                         await ChatServices.sendMessage(
                           type: "text",
-                          chatRoom: widget.roomId,
+                          chatRoom: (_chat > 0 && _chats == 0)
+                              ? widget.roomId
+                              : widget.userModelOther.uid +
+                                  "-" +
+                                  widget.userModel.uid,
                           message: _message,
                           model: widget.userModel,
                           model2: widget.userModelOther,
@@ -251,6 +202,107 @@ class _ChatRoomState extends State<ChatRoom> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Bub extends StatelessWidget {
+  const Bub({
+    Key key,
+    @required ScrollController scrollController,
+    @required this.widget,
+    this.snapshot,
+  })  : _scrollController = scrollController,
+        super(key: key);
+
+  final ScrollController _scrollController;
+  final ChatRoom widget;
+  final AsyncSnapshot<QuerySnapshot> snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      reverse: true,
+      controller: _scrollController,
+      itemCount: snapshot.data.docs.length,
+      itemBuilder: (context, index) {
+        DocumentSnapshot docs = snapshot.data.docs[index];
+        ChatModel chat = ChatModel.toMaps(docs);
+        return (chat.userId == widget.user.uid)
+            ? Bubble(
+                margin: BubbleEdges.only(top: 10),
+                alignment: Alignment.topRight,
+                nipWidth: 8,
+                nipHeight: 24,
+                nip: BubbleNip.rightTop,
+                color: Color.fromRGBO(225, 255, 199, 1.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    (chat.type == "image")
+                        ? Container(
+                            height: 200,
+                            width: 200,
+                            child: Image(
+                              image: NetworkImage(chat.pesan),
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : Text(
+                            chat.pesan,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                    Text(
+                      timeAgo(tanggal: chat.dibuat),
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              )
+            : Bubble(
+                margin: BubbleEdges.only(top: 10),
+                alignment: Alignment.topLeft,
+                nipWidth: 8,
+                nipHeight: 24,
+                nip: BubbleNip.leftTop,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    (chat.type == "image")
+                        ? Container(
+                            height: 200,
+                            width: 200,
+                            child: Image(
+                              image: NetworkImage(chat.pesan),
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : Text(
+                            chat.pesan,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                    Text(
+                      timeAgo(
+                        tanggal: chat.dibuat,
+                      ),
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              );
+      },
     );
   }
 }

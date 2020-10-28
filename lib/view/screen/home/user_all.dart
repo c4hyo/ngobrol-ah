@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
 import 'package:ngobrol_ah/network/services/user.dart';
 import 'package:ngobrol_ah/view/screen/home/chat_room.dart';
-import 'package:uuid/uuid.dart';
 
 class UserAllScreen extends StatelessWidget {
   final User user;
@@ -39,7 +38,7 @@ class UserAllScreen extends StatelessWidget {
                             Get.back();
                             Get.to(
                               ChatRoom(
-                                roomId: Uuid().v1(),
+                                roomId: "${userModel.uid}-${model.uid}",
                                 user: user,
                                 userModel: userModel,
                                 userModelOther: model,
