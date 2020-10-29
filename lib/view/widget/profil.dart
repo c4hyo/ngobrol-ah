@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
+import 'package:ngobrol_ah/view/screen/home/image_view.dart';
 import 'package:ngobrol_ah/view/screen/user/edit_profil.dart';
 
 Widget profil(BuildContext context, {UserModel model, User user}) {
@@ -38,13 +39,25 @@ Widget profil(BuildContext context, {UserModel model, User user}) {
             ),
             Positioned.fill(
               child: Align(
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  maxRadius: 80,
-                  backgroundImage:
-                      (model.fotoProfil == null || model.fotoProfil == "")
-                          ? AssetImage("asset/logo.png")
-                          : NetworkImage(model.fotoProfil),
+                child: GestureDetector(
+                  onTap: () {
+                    (model.fotoProfil == null || model.fotoProfil == "")
+                        ? print("no image")
+                        : Get.to(
+                            ImageView(
+                              imageUrl: model.fotoProfil,
+                            ),
+                            transition: Transition.zoom,
+                          );
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    maxRadius: 80,
+                    backgroundImage:
+                        (model.fotoProfil == null || model.fotoProfil == "")
+                            ? AssetImage("asset/logo.png")
+                            : NetworkImage(model.fotoProfil),
+                  ),
                 ),
               ),
             )

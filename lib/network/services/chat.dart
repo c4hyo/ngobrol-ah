@@ -88,4 +88,43 @@ class ChatServices {
 
     return completer.future;
   }
+
+  static Future<Map<String, dynamic>> sendImageAndReterive(
+      {String pesan, String pengirim, String token}) async {
+    String serverToken =
+        "AAAAJ35EKPI:APA91bFbR_e30w4vS3CxchZyO_Jw76SlSEd9aLcAuST876oFBv-tu7PG31G3UyQA35PxywGo6bU7j8lr-r6Lfe9pNBcdGSWoAsUdf2fD8d-WE23o-_O7OjncPxzWcDzfG88nSqBqdCaa";
+    await http.post(
+      'https://fcm.googleapis.com/fcm/send',
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverToken',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'image': pesan,
+            'body': "pesan baru",
+            'title': pengirim,
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': Uuid().v4(),
+            'status': 'done'
+          },
+          'to': token,
+        },
+      ),
+    );
+    final Completer<Map<String, dynamic>> completer =
+        Completer<Map<String, dynamic>>();
+
+    fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        completer.complete(message);
+      },
+    );
+
+    return completer.future;
+  }
 }

@@ -11,6 +11,7 @@ import 'package:ngobrol_ah/network/model/user_model.dart';
 import 'package:ngobrol_ah/network/services/chat.dart';
 import 'package:ngobrol_ah/utilities/storage.dart';
 import 'package:ngobrol_ah/utilities/text.dart';
+import 'package:ngobrol_ah/view/screen/home/image_view.dart';
 import 'package:ngobrol_ah/view/screen/user/profil.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -50,6 +51,11 @@ class _ChatRoomState extends State<ChatRoom> {
         message: _message,
         model: widget.userModel,
         model2: widget.userModelOther,
+      );
+      await ChatServices.sendImageAndReterive(
+        pengirim: widget.userModel.nama,
+        pesan: _message,
+        token: widget.userModelOther.token,
       );
     }
   }
@@ -197,7 +203,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         );
                         await ChatServices.sendAndReterive(
                           pengirim: widget.userModel.nama,
-                          pesan: "Pesan baru",
+                          pesan: _message,
                           token: widget.userModelOther.token,
                         );
                       }
@@ -250,9 +256,18 @@ class Bub extends StatelessWidget {
                         ? Container(
                             height: 200,
                             width: 200,
-                            child: Image(
-                              image: NetworkImage(chat.pesan),
-                              fit: BoxFit.contain,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                  ImageView(
+                                    imageUrl: chat.pesan,
+                                  ),
+                                );
+                              },
+                              child: Image(
+                                image: NetworkImage(chat.pesan),
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           )
                         : Text(
@@ -285,9 +300,18 @@ class Bub extends StatelessWidget {
                         ? Container(
                             height: 200,
                             width: 200,
-                            child: Image(
-                              image: NetworkImage(chat.pesan),
-                              fit: BoxFit.contain,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                  ImageView(
+                                    imageUrl: chat.pesan,
+                                  ),
+                                );
+                              },
+                              child: Image(
+                                image: NetworkImage(chat.pesan),
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           )
                         : Text(

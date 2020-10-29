@@ -194,7 +194,13 @@ class _HomeState extends State<Home> {
                                     : Icon(Icons.arrow_right),
                                 (_pesan['type'] == "image")
                                     ? Text("Gambar")
-                                    : Text(_pesan['pesan']),
+                                    : Flexible(
+                                        child: Text(
+                                          _pesan['pesan'],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
                               ],
                             );
                           },
