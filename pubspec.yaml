@@ -30,12 +30,14 @@ dependencies:
   email_validator: ^1.0.6
   firebase_auth: ^0.18.1+2
   firebase_core: ^0.5.0+1
+  firebase_messaging: ^7.0.3
   firebase_storage: ^4.0.1
   flushbar: ^1.10.4
   flutter_icons: ^1.1.0
   flutter_image_compress: ^0.7.0
   get: ^3.13.2
   google_fonts: ^1.1.0
+  http: ^0.12.2
   image_picker: ^0.6.7+12
   intl: ^0.16.1
   jiffy: ^3.0.1

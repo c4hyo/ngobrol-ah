@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
@@ -21,6 +22,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String idUser, lastPesan;
+  FirebaseMessaging fcm = FirebaseMessaging();
+
+  @override
+  void initState() {
+    // fcm.getToken().then((value) => print(value.toString()));
+    fcm.configure();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +149,7 @@ class _HomeState extends State<Home> {
                     UserModel model = UserModel.toMaps(snapshot.data);
                     return Card(
                       child: ListTile(
-                        onTap: () {
+                        onTap: () async {
                           Get.to(
                             ChatRoom(
                               roomId: data.id,

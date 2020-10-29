@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ngobrol_ah/network/services/user.dart';
@@ -13,6 +14,7 @@ class _RegistrasiScreenState extends State<RegistrasiScreen> {
   bool _isLoading = false;
   String _email, _password, _nama;
   GlobalKey<FormState> _form = GlobalKey<FormState>();
+  FirebaseMessaging fcm = new FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +205,7 @@ class _RegistrasiScreenState extends State<RegistrasiScreen> {
                               email: _email,
                               password: _password,
                               nama: _nama,
+                              token: await fcm.getToken(),
                             );
                             Get.back();
                           } catch (e) {

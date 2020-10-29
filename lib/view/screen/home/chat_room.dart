@@ -98,6 +98,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         child: CircularProgressIndicator(),
                       );
                     }
+
                     _chat = snapshot.data.docs.length;
                     return (snapshot.data.docs.length > 0)
                         ? Bub(
@@ -111,6 +112,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                     "-" +
                                     widget.userModel.uid)
                                 .collection("pesan")
+                                .orderBy("dibuat", descending: true)
                                 .snapshots(),
                             builder: (context, snaps) {
                               if (!snaps.hasData) {
@@ -181,6 +183,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       FocusScope.of(context).unfocus();
                       if (_form.currentState.validate()) {
                         _form.currentState.save();
+                        _form.currentState.reset();
                         await ChatServices.sendMessage(
                           type: "text",
                           chatRoom: (_chat > 0 && _chats == 0)
@@ -192,7 +195,11 @@ class _ChatRoomState extends State<ChatRoom> {
                           model: widget.userModel,
                           model2: widget.userModelOther,
                         );
-                        _form.currentState.reset();
+                        await ChatServices.sendAndReterive(
+                          pengirim: widget.userModel.nama,
+                          pesan: "Pesan baru",
+                          token: widget.userModelOther.token,
+                        );
                       }
                     },
                   )

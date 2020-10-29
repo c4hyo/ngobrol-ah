@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ngobrol_ah/network/services/user.dart';
@@ -15,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String _email, _password;
   GlobalKey<FormState> _form = GlobalKey<FormState>();
+  FirebaseMessaging fcm = new FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             await UserServices.signIn(
                               email: _email,
                               password: _password,
+                              token: await fcm.getToken(),
                             );
                           } catch (e) {
                             setState(() {

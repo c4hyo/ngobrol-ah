@@ -6,6 +6,7 @@ class UserModel {
   String uid;
   String fotoProfil;
   String bio;
+  String token;
 
   UserModel({
     this.nama,
@@ -13,6 +14,7 @@ class UserModel {
     this.uid,
     this.fotoProfil,
     this.bio,
+    this.token,
   });
 
   factory UserModel.toMaps(DocumentSnapshot doc) {
@@ -22,6 +24,7 @@ class UserModel {
       telepon: doc.data()['telepon'] ?? "",
       uid: doc.id,
       bio: doc.data()['bio'] ?? "",
+      token: doc.data()['token'] ?? "",
     );
   }
 }

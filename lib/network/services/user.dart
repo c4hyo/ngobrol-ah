@@ -8,7 +8,7 @@ class UserServices {
       FirebaseFirestore.instance.collection("users");
 
   static Future<User> signup(
-      {String nama, String email, String password}) async {
+      {String nama, String email, String password, String token}) async {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
@@ -23,6 +23,7 @@ class UserServices {
         "telepon": null,
         "foto_profil": null,
         "bio": null,
+        "token": token,
       });
       return userCredential.user;
     } catch (e) {
@@ -30,11 +31,20 @@ class UserServices {
     }
   }
 
-  static Future<User> signIn({String email, String password}) async {
+  static Future<User> signIn(
+      {String email, String password, String token}) async {
     try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
+      );
+      await users.doc(userCredential.user.uid).set(
+        {
+          "token": token,
+        },
+        SetOptions(
+          merge: true,
+        ),
       );
 
       return userCredential.user;

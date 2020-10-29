@@ -6,6 +6,7 @@ class ChatModel {
   String pesan;
   String type;
   String userId;
+  bool isRead;
 
   ChatModel({
     this.dari,
@@ -13,6 +14,7 @@ class ChatModel {
     this.pesan,
     this.type,
     this.userId,
+    this.isRead,
   });
   factory ChatModel.toMaps(DocumentSnapshot doc) {
     return ChatModel(
@@ -21,6 +23,7 @@ class ChatModel {
       pesan: doc.data()['pesan'] ?? "",
       type: doc.data()['type'],
       userId: doc.data()['user_id'] ?? "",
+      isRead: doc.data()['is_read'] ?? false,
     );
   }
 }
