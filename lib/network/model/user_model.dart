@@ -7,6 +7,8 @@ class UserModel {
   String fotoProfil;
   String bio;
   String token;
+  bool isOnline;
+  bool isWriting;
 
   UserModel({
     this.nama,
@@ -15,6 +17,8 @@ class UserModel {
     this.fotoProfil,
     this.bio,
     this.token,
+    this.isOnline,
+    this.isWriting,
   });
 
   factory UserModel.toMaps(DocumentSnapshot doc) {
@@ -25,6 +29,8 @@ class UserModel {
       uid: doc.id,
       bio: doc.data()['bio'] ?? "",
       token: doc.data()['token'] ?? "",
+      isOnline: doc.data()['isOnline'] ?? false,
+      isWriting: doc.data()['isWriting'] ?? false,
     );
   }
 }

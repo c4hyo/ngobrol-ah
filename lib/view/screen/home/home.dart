@@ -20,15 +20,38 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   String idUser, lastPesan;
   FirebaseMessaging fcm = FirebaseMessaging();
 
   @override
   void initState() {
-    // fcm.getToken().then((value) => print(value.toString()));
     fcm.configure();
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive) {
+      print("inactive");
+      await UserServices.isOnline(user: widget.user, isOnline: false);
+    }
+    if (state == AppLifecycleState.paused) {
+      print("pause");
+    }
+    if (state == AppLifecycleState.resumed) {
+      print("resumed");
+      await UserServices.isOnline(user: widget.user, isOnline: true);
+    }
   }
 
   @override
@@ -90,7 +113,7 @@ class _HomeState extends State<Home> {
               title: Text("Logout"),
               leading: Icon(Icons.exit_to_app),
               onTap: () async {
-                await UserServices.signOut();
+                await UserServices.signOut(user: widget.user);
               },
             ),
           ],

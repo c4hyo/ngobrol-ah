@@ -58,7 +58,7 @@ class UserAllScreen extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          subtitle: Text(model.bio),
+                          subtitle: model.isOnline ? Text("online") : Text(""),
                         ),
                       )
                     : SizedBox();

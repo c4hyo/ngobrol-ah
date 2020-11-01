@@ -38,6 +38,10 @@ class UserServices {
         email: email,
         password: password,
       );
+      isOnline(
+        user: userCredential.user,
+        isOnline: true,
+      );
       await users.doc(userCredential.user.uid).set(
         {
           "token": token,
@@ -53,7 +57,8 @@ class UserServices {
     }
   }
 
-  static Future<void> signOut() async {
+  static Future<void> signOut({User user}) async {
+    isOnline(isOnline: false, user: user);
     await auth.signOut();
   }
 
@@ -74,6 +79,24 @@ class UserServices {
     } catch (e) {
       return e;
     }
+  }
+
+  static Future<void> isOnline({User user, bool isOnline}) async {
+    return await users.doc(user.uid).set(
+      {
+        "isOnline": isOnline,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  static Future<void> isWriting({User user, bool isWriting}) async {
+    return await users.doc(user.uid).set(
+      {
+        "isWriting": isWriting,
+      },
+      SetOptions(merge: true),
+    );
   }
 
   static Future<void> updateProfil({UserModel userModel, User user}) async {

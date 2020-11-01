@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ngobrol_ah/network/model/chat_model.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
 import 'package:ngobrol_ah/network/services/chat.dart';
+import 'package:ngobrol_ah/network/services/user.dart';
 import 'package:ngobrol_ah/utilities/storage.dart';
 import 'package:ngobrol_ah/utilities/text.dart';
 import 'package:ngobrol_ah/view/screen/home/image_view.dart';
@@ -64,26 +65,111 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: ListTile(
-          onTap: () {
-            Get.to(
-              ProfilScreen(
-                user: widget.user,
-                userModel: widget.userModelOther,
-              ),
-            );
+        leading: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          backgroundImage: (widget.userModelOther.fotoProfil == null ||
+                  widget.userModelOther.fotoProfil == "")
+              ? AssetImage("asset/logo.png")
+              : NetworkImage(widget.userModelOther.fotoProfil),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => Get.back(),
+          )
+        ],
+        title: StreamBuilder<DocumentSnapshot>(
+          stream: UserServices.users.doc(widget.userModelOther.uid).snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return ListTile(
+                onTap: () {
+                  Get.to(
+                    ProfilScreen(
+                      user: widget.user,
+                      userModel: widget.userModelOther,
+                    ),
+                  );
+                },
+                title: Row(
+                  children: [
+                    Icon(
+                      widget.userModelOther.isOnline
+                          ? Icons.check
+                          : Icons.remove_circle,
+                      color: widget.userModelOther.isOnline
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      widget.userModelOther.nama,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              );
+            }
+            DocumentSnapshot docs = snapshot.data;
+            UserModel model = UserModel.toMaps(docs);
+            return model.isWriting
+                ? ListTile(
+                    onTap: () {
+                      Get.to(
+                        ProfilScreen(
+                          user: widget.user,
+                          userModel: model,
+                        ),
+                      );
+                    },
+                    title: Row(
+                      children: [
+                        Icon(
+                          model.isOnline ? Icons.check : Icons.remove_circle,
+                          color: model.isOnline ? Colors.white : Colors.black,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          model.nama,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    subtitle: Text(
+                      "Sedang Menulis",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : ListTile(
+                    onTap: () {
+                      Get.to(
+                        ProfilScreen(
+                          user: widget.user,
+                          userModel: model,
+                        ),
+                      );
+                    },
+                    title: Row(
+                      children: [
+                        Icon(
+                          model.isOnline ? Icons.check : Icons.remove_circle,
+                          color: model.isOnline ? Colors.white : Colors.black,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          model.nama,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  );
           },
-          title: Text(
-            widget.userModelOther.nama,
-            style: TextStyle(color: Colors.white),
-          ),
-          leading: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            backgroundImage: (widget.userModelOther.fotoProfil == null ||
-                    widget.userModelOther.fotoProfil == "")
-                ? AssetImage("asset/logo.png")
-                : NetworkImage(widget.userModelOther.fotoProfil),
-          ),
         ),
       ),
       body: SafeArea(
@@ -167,6 +253,21 @@ class _ChatRoomState extends State<ChatRoom> {
                           ),
                           maxLines: null,
                           keyboardType: TextInputType.multiline,
+                          onChanged: (value) async {
+                            if (value.isEmpty) {
+                              await UserServices.isWriting(
+                                isWriting: false,
+                                user: widget.user,
+                              );
+                              // print("tidak menulis");
+                            } else {
+                              await UserServices.isWriting(
+                                isWriting: true,
+                                user: widget.user,
+                              );
+                              // print("sedang menulis");
+                            }
+                          },
                           onSaved: (newValue) {
                             _message = newValue;
                           },
@@ -186,6 +287,10 @@ class _ChatRoomState extends State<ChatRoom> {
                       color: Colors.white,
                     ),
                     onPressed: () async {
+                      await UserServices.isWriting(
+                        isWriting: false,
+                        user: widget.user,
+                      );
                       FocusScope.of(context).unfocus();
                       if (_form.currentState.validate()) {
                         _form.currentState.save();
