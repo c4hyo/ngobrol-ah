@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bubble/bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -48,7 +49,9 @@ class _ChatRoomState extends State<ChatRoom> {
       );
       await ChatServices.sendMessage(
         type: "image",
-        chatRoom: widget.roomId,
+        chatRoom: (_chat > 0 && _chats == 0)
+            ? widget.roomId
+            : widget.userModelOther.uid + "-" + widget.userModel.uid,
         message: _message,
         model: widget.userModel,
         model2: widget.userModelOther,
@@ -326,12 +329,10 @@ class _ChatRoomState extends State<ChatRoom> {
 
 class Bub extends StatelessWidget {
   const Bub({
-    Key key,
     @required ScrollController scrollController,
     @required this.widget,
     this.snapshot,
-  })  : _scrollController = scrollController,
-        super(key: key);
+  }) : _scrollController = scrollController;
 
   final ScrollController _scrollController;
   final ChatRoom widget;
@@ -359,24 +360,31 @@ class Bub extends StatelessWidget {
                   children: [
                     (chat.type == "image")
                         ? Container(
-                            height: 200,
-                            width: 200,
+                            width: MediaQuery.of(context).size.width * (3 / 5),
                             child: GestureDetector(
                               onTap: () {
                                 Get.to(
                                   ImageView(
-                                    imageUrl: chat.pesan,
+                                    imageUrl: dekripsi(
+                                      Encrypted.fromBase64(chat.pesan),
+                                    ),
                                   ),
                                 );
                               },
                               child: Image(
-                                image: NetworkImage(chat.pesan),
+                                image: NetworkImage(
+                                  dekripsi(
+                                    Encrypted.fromBase64(chat.pesan),
+                                  ),
+                                ),
                                 fit: BoxFit.contain,
                               ),
                             ),
                           )
                         : Text(
-                            chat.pesan,
+                            dekripsi(
+                              Encrypted.fromBase64(chat.pesan),
+                            ),
                             style: TextStyle(
                               fontSize: 18,
                             ),
@@ -403,24 +411,31 @@ class Bub extends StatelessWidget {
                   children: [
                     (chat.type == "image")
                         ? Container(
-                            height: 200,
-                            width: 200,
+                            width: MediaQuery.of(context).size.width * (3 / 5),
                             child: GestureDetector(
                               onTap: () {
                                 Get.to(
                                   ImageView(
-                                    imageUrl: chat.pesan,
+                                    imageUrl: dekripsi(
+                                      Encrypted.fromBase64(chat.pesan),
+                                    ),
                                   ),
                                 );
                               },
                               child: Image(
-                                image: NetworkImage(chat.pesan),
+                                image: NetworkImage(
+                                  dekripsi(
+                                    Encrypted.fromBase64(chat.pesan),
+                                  ),
+                                ),
                                 fit: BoxFit.contain,
                               ),
                             ),
                           )
                         : Text(
-                            chat.pesan,
+                            dekripsi(
+                              Encrypted.fromBase64(chat.pesan),
+                            ),
                             style: TextStyle(
                               fontSize: 18,
                             ),

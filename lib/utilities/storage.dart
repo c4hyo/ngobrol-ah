@@ -15,9 +15,8 @@ class StorageService {
       RegExp exp = RegExp(r'userProfile_(.*).jpg');
       photoId = exp.firstMatch(url)[1];
     }
-    StorageUploadTask uploadTask = storage
-        .child('images/$category/userProfile_$photoId.jpg')
-        .putFile(image);
+    StorageUploadTask uploadTask =
+        storage.child('$category/userProfile_$photoId.jpg').putFile(image);
     StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;

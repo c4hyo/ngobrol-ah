@@ -26,6 +26,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    // print(enkripsi("asam manis").base64);
+    // print(dekripsi(enkripsi('asam manis')));
     fcm.configure();
     WidgetsBinding.instance.addObserver(this);
     super.initState();

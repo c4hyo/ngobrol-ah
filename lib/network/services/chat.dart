@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:ngobrol_ah/utilities/text.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatServices {
@@ -43,7 +44,7 @@ class ChatServices {
     return await chats.doc(chatRoom).collection("pesan").add({
       "dari": model.nama,
       "user_id": model.uid,
-      "pesan": message,
+      "pesan": enkripsi(message).base64,
       "type": type,
       "is_read": false,
       // "dibuat": DateFormat('yyyy-MM-dd hh:mm:aa').format(DateTime.now()),
