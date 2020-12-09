@@ -23,14 +23,14 @@ class UserModel {
 
   factory UserModel.toMaps(DocumentSnapshot doc) {
     return UserModel(
-      fotoProfil: doc.data()['foto_profil'] ?? "",
+      uid: doc.id,
       nama: doc.data()['nama'] ?? "",
       telepon: doc.data()['telepon'] ?? "",
-      uid: doc.id,
       bio: doc.data()['bio'] ?? "",
       token: doc.data()['token'] ?? "",
       isOnline: doc.data()['isOnline'] ?? false,
       isWriting: doc.data()['isWriting'] ?? false,
+      fotoProfil: doc.data()['foto_profil'] ?? "",
     );
   }
 }

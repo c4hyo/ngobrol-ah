@@ -48,8 +48,8 @@ class Wrapper extends StatelessWidget {
     User user = Provider.of<User>(context);
     return (user == null)
         ? LoginScreen()
-        : FutureBuilder<DocumentSnapshot>(
-            future: UserServices.users.doc(user.uid).get(),
+        : StreamBuilder<DocumentSnapshot>(
+            stream: UserServices.users.doc(user.uid).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Scaffold(
@@ -66,6 +66,7 @@ class Wrapper extends StatelessWidget {
                 user: user,
                 userModel: model,
               );
+              // return Text(model.nama);
             },
           );
   }

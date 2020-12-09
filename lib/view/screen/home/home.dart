@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ import 'package:ngobrol_ah/view/screen/user/profil.dart';
 class Home extends StatefulWidget {
   final User user;
   final UserModel userModel;
-  const Home({Key key, this.user, this.userModel}) : super(key: key);
+  const Home({this.user, this.userModel});
 
   @override
   _HomeState createState() => _HomeState();
@@ -26,8 +27,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    // print(enkripsi("asam manis").base64);
-    // print(dekripsi(enkripsi('asam manis')));
     fcm.configure();
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -49,6 +48,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.paused) {
       print("pause");
+      await UserServices.isOnline(user: widget.user, isOnline: false);
     }
     if (state == AppLifecycleState.resumed) {
       print("resumed");
@@ -221,7 +221,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     ? Text("Gambar")
                                     : Flexible(
                                         child: Text(
-                                          _pesan['pesan'],
+                                          dekripsi(
+                                            Encrypted.fromBase64(
+                                              _pesan['pesan'],
+                                            ),
+                                          ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),

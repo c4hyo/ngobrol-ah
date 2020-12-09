@@ -58,8 +58,8 @@ class UserServices {
   }
 
   static Future<void> signOut({User user}) async {
-    isOnline(isOnline: false, user: user);
-    await auth.signOut();
+    await isOnline(isOnline: false, user: user);
+    return await auth.signOut();
   }
 
   static Future<void> changePassword({String password, User user}) async {

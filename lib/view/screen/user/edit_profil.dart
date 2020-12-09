@@ -229,6 +229,9 @@ class _UserEditProfilState extends State<UserEditProfil> {
                             ),
                           ),
                     onPressed: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
                       if (_form.currentState.validate()) {
                         _form.currentState.save();
                         if (_foto == null) {
@@ -241,9 +244,7 @@ class _UserEditProfilState extends State<UserEditProfil> {
                             category: "users",
                           );
                         }
-                        setState(() {
-                          _isLoading = true;
-                        });
+
                         UserModel model = UserModel(
                           bio: _bio,
                           fotoProfil: _fotoProfil,

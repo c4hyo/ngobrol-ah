@@ -1,20 +1,16 @@
 import 'dart:io';
 
-import 'package:bubble/bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:encrypt/encrypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ngobrol_ah/network/model/chat_model.dart';
 import 'package:ngobrol_ah/network/model/user_model.dart';
 import 'package:ngobrol_ah/network/services/chat.dart';
 import 'package:ngobrol_ah/network/services/user.dart';
 import 'package:ngobrol_ah/utilities/storage.dart';
-import 'package:ngobrol_ah/utilities/text.dart';
-import 'package:ngobrol_ah/view/screen/home/image_view.dart';
 import 'package:ngobrol_ah/view/screen/user/profil.dart';
+import 'package:ngobrol_ah/view/widget/chat.dart';
 
 class ChatRoom extends StatefulWidget {
   final String roomId;
@@ -68,12 +64,15 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          backgroundImage: (widget.userModelOther.fotoProfil == null ||
-                  widget.userModelOther.fotoProfil == "")
-              ? AssetImage("asset/logo.png")
-              : NetworkImage(widget.userModelOther.fotoProfil),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            backgroundImage: (widget.userModelOther.fotoProfil == null ||
+                    widget.userModelOther.fotoProfil == "")
+                ? AssetImage("asset/logo.png")
+                : NetworkImage(widget.userModelOther.fotoProfil),
+          ),
         ),
         actions: [
           IconButton(
@@ -94,24 +93,16 @@ class _ChatRoomState extends State<ChatRoom> {
                     ),
                   );
                 },
-                title: Row(
-                  children: [
-                    Icon(
-                      widget.userModelOther.isOnline
-                          ? Icons.check
-                          : Icons.remove_circle,
-                      color: widget.userModelOther.isOnline
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      widget.userModelOther.nama,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+                leading: Icon(
+                  Icons.circle,
+                  color: (widget.userModelOther.isOnline)
+                      ? Colors.white
+                      : Colors.red,
+                ),
+                title: Text(
+                  widget.userModelOther.nama,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
                 ),
               );
             }
@@ -127,20 +118,16 @@ class _ChatRoomState extends State<ChatRoom> {
                         ),
                       );
                     },
-                    title: Row(
-                      children: [
-                        Icon(
-                          model.isOnline ? Icons.check : Icons.remove_circle,
-                          color: model.isOnline ? Colors.white : Colors.black,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          model.nama,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                    leading: Icon(
+                      Icons.circle,
+                      color: (model.isOnline) ? Colors.white : Colors.red,
+                    ),
+                    title: Text(
+                      model.nama,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                     subtitle: Text(
                       "Sedang Menulis",
@@ -156,20 +143,16 @@ class _ChatRoomState extends State<ChatRoom> {
                         ),
                       );
                     },
-                    title: Row(
-                      children: [
-                        Icon(
-                          model.isOnline ? Icons.check : Icons.remove_circle,
-                          color: model.isOnline ? Colors.white : Colors.black,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          model.nama,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                    leading: Icon(
+                      Icons.circle,
+                      color: (model.isOnline) ? Colors.white : Colors.red,
+                    ),
+                    title: Text(
+                      model.nama,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   );
           },
@@ -323,137 +306,6 @@ class _ChatRoomState extends State<ChatRoom> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class Bub extends StatelessWidget {
-  const Bub({
-    @required ScrollController scrollController,
-    @required this.widget,
-    this.snapshot,
-  }) : _scrollController = scrollController;
-
-  final ScrollController _scrollController;
-  final ChatRoom widget;
-  final AsyncSnapshot<QuerySnapshot> snapshot;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      reverse: true,
-      controller: _scrollController,
-      itemCount: snapshot.data.docs.length,
-      itemBuilder: (context, index) {
-        DocumentSnapshot docs = snapshot.data.docs[index];
-        ChatModel chat = ChatModel.toMaps(docs);
-        return (chat.userId == widget.user.uid)
-            ? Bubble(
-                margin: BubbleEdges.only(top: 10),
-                alignment: Alignment.topRight,
-                nipWidth: 8,
-                nipHeight: 24,
-                nip: BubbleNip.rightTop,
-                color: Color.fromRGBO(225, 255, 199, 1.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    (chat.type == "image")
-                        ? Container(
-                            width: MediaQuery.of(context).size.width * (3 / 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                  ImageView(
-                                    imageUrl: dekripsi(
-                                      Encrypted.fromBase64(chat.pesan),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Image(
-                                image: NetworkImage(
-                                  dekripsi(
-                                    Encrypted.fromBase64(chat.pesan),
-                                  ),
-                                ),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            dekripsi(
-                              Encrypted.fromBase64(chat.pesan),
-                            ),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.right,
-                          ),
-                    Text(
-                      timeAgo(tanggal: chat.dibuat),
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              )
-            : Bubble(
-                margin: BubbleEdges.only(top: 10),
-                alignment: Alignment.topLeft,
-                nipWidth: 8,
-                nipHeight: 24,
-                nip: BubbleNip.leftTop,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    (chat.type == "image")
-                        ? Container(
-                            width: MediaQuery.of(context).size.width * (3 / 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                  ImageView(
-                                    imageUrl: dekripsi(
-                                      Encrypted.fromBase64(chat.pesan),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Image(
-                                image: NetworkImage(
-                                  dekripsi(
-                                    Encrypted.fromBase64(chat.pesan),
-                                  ),
-                                ),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            dekripsi(
-                              Encrypted.fromBase64(chat.pesan),
-                            ),
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.right,
-                          ),
-                    Text(
-                      timeAgo(
-                        tanggal: chat.dibuat,
-                      ),
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              );
-      },
     );
   }
 }
